@@ -287,6 +287,7 @@ namespace ClientServerApp
         }
         private void SendToServerButton_Click(object sender, EventArgs e)
         {
+            path = textBox2.Text;
             if (listBox1.SelectedItems.Count == 1)
             {
                 if (path == null || path.ToString() == "")
@@ -306,7 +307,6 @@ namespace ClientServerApp
                 }
                 SendToServer(path);
             }
-
         }
         private void Disconnect()
         {
