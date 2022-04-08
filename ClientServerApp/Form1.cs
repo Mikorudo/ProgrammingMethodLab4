@@ -64,7 +64,7 @@ namespace ClientServerApp
                     StreamReader reader = new StreamReader(networkStream);
                     string dataFromClient = reader.ReadLine();
 
-                    dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
+                    dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("#"));
                     if (dataFromClient == "Диски")
                     {
                         SendDrives();
@@ -96,11 +96,16 @@ namespace ClientServerApp
                         }
                     }
                 }
+                catch (UnauthorizedAccessException uae)
+                {
+                    Invoke(DelegateRecieveMessage, $"{uae.Message}. {DateTime.Now}.");
+                    textBox2.Text = textBox2.Text.Remove(textBox2.Text.LastIndexOf('\\'));
+                }
                 catch (Exception ex)
                 {
                     disksSent = false;
                     //MessageBox.Show(ex.ToString(), "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Invoke(DelegateRecieveMessage, $"{ex.Message}. Перезагрузка сервера... {DateTime.Now}. Порт в режиме ожидания соединения..."); serverSocket.Stop();
+                    Invoke(DelegateRecieveMessage, $"{ex}. Перезагрузка сервера... {DateTime.Now}. Порт в режиме ожидания соединения..."); serverSocket.Stop();
                     serverSocket.Stop();
                     serverSocket.Start();
                     clientSocket = serverSocket.AcceptTcpClient();
@@ -297,7 +302,6 @@ namespace ClientServerApp
                 }
                 else
                 {
-
                     string path = listBox1.SelectedItem.ToString();
                     this.path = Path.Combine(this.path, path);
                 }
@@ -311,7 +315,7 @@ namespace ClientServerApp
         private void Disconnect()
         {
             NetworkStream clientStream = tcpClient.GetStream();
-            string message = "Отключение от сервера:..." + "$";
+            string message = "Отключение от сервера:..." + "#";
             StreamWriter writer = new StreamWriter(clientStream);
             writer.WriteLine(message);
             writer.Flush();
@@ -338,9 +342,9 @@ namespace ClientServerApp
         {
             try
             {
-                string message = text + "$";
+                string message = text + "#";
                 NetworkStream clientStream = tcpClient.GetStream();
-                ClientTextBox.Text += $"Передача {message.Substring(0, message.IndexOf("$"))} серверу... {DateTime.Now}\n\n";
+                ClientTextBox.Text += $"Передача {message.Substring(0, message.IndexOf("#"))} серверу... {DateTime.Now}\n\n";
                 StreamWriter writer = new StreamWriter(clientStream);
                 writer.WriteLine(message);
                 writer.Flush();
@@ -361,7 +365,6 @@ namespace ClientServerApp
             {
                 SendToServer(path);
             }
-
             textBox2.Text = path;
         }
         private void pictureBox2_Click(object sender, EventArgs e)
