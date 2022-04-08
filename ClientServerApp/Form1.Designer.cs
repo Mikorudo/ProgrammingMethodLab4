@@ -29,6 +29,7 @@ namespace ClientServerApp
         /// </summary>
         private void InitializeComponent()
         {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.label3 = new System.Windows.Forms.Label();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.SendToClientButton = new System.Windows.Forms.Button();
@@ -43,6 +44,9 @@ namespace ClientServerApp
 			this.DisconnectButton = new System.Windows.Forms.Button();
 			this.ConnectButton = new System.Windows.Forms.Button();
 			this.listBox1 = new System.Windows.Forms.ListBox();
+			this.textBox2 = new System.Windows.Forms.TextBox();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label3
@@ -176,16 +180,40 @@ namespace ClientServerApp
 			// 
 			this.listBox1.FormattingEnabled = true;
 			this.listBox1.ItemHeight = 16;
-			this.listBox1.Location = new System.Drawing.Point(7, 23);
+			this.listBox1.Location = new System.Drawing.Point(7, 55);
 			this.listBox1.Name = "listBox1";
-			this.listBox1.Size = new System.Drawing.Size(363, 356);
+			this.listBox1.Size = new System.Drawing.Size(363, 324);
 			this.listBox1.TabIndex = 39;
+			this.listBox1.DoubleClick += new System.EventHandler(this.SendToServerButton_Click);
+			// 
+			// textBox2
+			// 
+			this.textBox2.Enabled = false;
+			this.textBox2.Location = new System.Drawing.Point(77, 23);
+			this.textBox2.Name = "textBox2";
+			this.textBox2.ReadOnly = true;
+			this.textBox2.Size = new System.Drawing.Size(293, 22);
+			this.textBox2.TabIndex = 40;
+			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+			this.pictureBox1.Location = new System.Drawing.Point(42, 23);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(29, 22);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.pictureBox1.TabIndex = 41;
+			this.pictureBox1.TabStop = false;
+			this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1007, 565);
+			this.Controls.Add(this.pictureBox1);
+			this.Controls.Add(this.textBox2);
 			this.Controls.Add(this.listBox1);
 			this.Controls.Add(this.SendToServerButton);
 			this.Controls.Add(this.DisconnectButton);
@@ -202,6 +230,7 @@ namespace ClientServerApp
 			this.Controls.Add(this.ClientTextBox);
 			this.Name = "Form1";
 			this.Text = "Form1";
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -223,6 +252,8 @@ namespace ClientServerApp
         private System.Windows.Forms.Button DisconnectButton;
         private System.Windows.Forms.Button ConnectButton;
 		private System.Windows.Forms.ListBox listBox1;
+		private System.Windows.Forms.TextBox textBox2;
+		private System.Windows.Forms.PictureBox pictureBox1;
 	}
 }
 

@@ -48,7 +48,7 @@ namespace ClientServerApp
         {
             ServerTextBox.Text += $"{message}. {DateTime.Now}\n";
         }
-        NetworkStream networkStream;
+        
         private void StartServer()
         {
             Action<string> DelegateRecieveMessage = RecieveMessage;
@@ -61,18 +61,18 @@ namespace ClientServerApp
             {
                 try
                 {
-                    networkStream = clientSocket.GetStream();
+                    NetworkStream networkStream = clientSocket.GetStream();
                     byte[] bytesFrom = new byte[1024];
                     networkStream.Read(bytesFrom, 0, 1024);
                     string dataFromClient = Encoding.UTF8.GetString(bytesFrom);
                     dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("$"));
-                    string serverResponse;
                     if (dataFromClient == "Диски")
                     {
                         SendDrives();
                     }
                     else
 					{
+                        dataFromClient = dataFromClient.Trim('\0');
 						if (Directory.Exists(dataFromClient))
 						{
                             SendDirectories(dataFromClient);
@@ -91,8 +91,9 @@ namespace ClientServerApp
                     }
                     ServerTextBox.Text += $"Сервер получил сообщение от клиента: {dataFromClient}. {DateTime.Now}\n";
                 }
-                catch
+                catch (Exception ex)
                 {
+                    MessageBox.Show(ex.ToString(), "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Invoke(DelegateRecieveMessage, $"Клиент отключился в {DateTime.Now}. Порт в режиме ожидания соединения...");
                     serverSocket.Stop();
                     serverSocket.Start();
@@ -111,6 +112,7 @@ namespace ClientServerApp
             }
             string message = "Диски: " + drives;
             byte[] listBytes = Encoding.UTF8.GetBytes(message);
+            NetworkStream networkStream = clientSocket.GetStream();
             networkStream.Write(listBytes, 0, listBytes.Length);
             networkStream.Flush();
         }
@@ -121,16 +123,17 @@ namespace ClientServerApp
             {
                 if (dirs != "")
                     dirs += ",";
-                dirs += item;
+                dirs += Path.GetFileName(item);
             }
             foreach (var item in Directory.GetFiles(path))
             {
                 if (dirs != "")
                     dirs += ",";
-                dirs += item;
+                dirs += Path.GetFileName(item);
             }
             string message = "Каталоги и файлы: " + dirs;
             byte[] listBytes = Encoding.UTF8.GetBytes(message);
+            NetworkStream networkStream = clientSocket.GetStream();
             networkStream.Write(listBytes, 0, listBytes.Length);
             networkStream.Flush();
         }
@@ -142,6 +145,7 @@ namespace ClientServerApp
                 string text = await streamReader.ReadToEndAsync();
                 string message = "Содержимое текстового файла: " + text;
                 byte[] listBytes = Encoding.UTF8.GetBytes(message);
+                NetworkStream networkStream = clientSocket.GetStream();
                 networkStream.Write(listBytes, 0, listBytes.Length);
                 networkStream.Flush();
             }
@@ -163,7 +167,7 @@ namespace ClientServerApp
 
         #region [ CLIENT  ]
         TcpClient tcpClient;
-        DirectoryInfo directory;
+        string directory;
         List<string> directories;
         private void ConnectButton_Click(object sender, EventArgs e)
         {
@@ -240,25 +244,24 @@ namespace ClientServerApp
             listBox1.Items.Clear();
 			foreach (var item in directories)
 			{
-                listBox1.Items.Add(item);
+                string temp = item.Trim('\0');
+                listBox1.Items.Add(temp);
 			}
+            listBox1.Items.Add(@"C:\Users");
 		}
         private void SendToServerButton_Click(object sender, EventArgs e)
         {
-            try
+            if (directory == null || directory.ToString() == "")
             {
-                string message = "Тест" + "$";
-                NetworkStream clientStream = tcpClient.GetStream();
-                UTF8Encoding encoding = new UTF8Encoding();
-                byte[] bytes = encoding.GetBytes(message);
-                ClientTextBox.Text += $"Передача {message.Substring(0, message.IndexOf("$"))} серверу... {DateTime.Now}\n";
-                clientStream.Write(bytes, 0, bytes.Length);
+                string path = listBox1.SelectedItem as string;
+                directory = path;
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(ex.ToString(), "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string path = listBox1.SelectedItem.ToString();
+                directory = Path.Combine(directory, path);
             }
-            
+            SendToServer(directory);
         }
         private void DisconnectButton_Click(object sender, EventArgs e)
         {
@@ -278,5 +281,30 @@ namespace ClientServerApp
             }
         }
 		#endregion
+        private void SendToServer(string text)
+		{
+            try
+            {
+                string message = text + "$";
+                NetworkStream clientStream = tcpClient.GetStream();
+                UTF8Encoding encoding = new UTF8Encoding();
+                byte[] bytes = encoding.GetBytes(message);
+                textBox2.Text = directory;
+                ClientTextBox.Text += $"Передача {message.Substring(0, message.IndexOf("$"))} серверу... {DateTime.Now}\n";
+                clientStream.Write(bytes, 0, bytes.Length);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+		private void pictureBox1_Click(object sender, EventArgs e)
+		{
+            directory = Path.GetDirectoryName(directory);
+            if (directory == null)
+                SendToServer("Диски");
+            else
+                SendToServer(directory);
+        }
 	}
 }
