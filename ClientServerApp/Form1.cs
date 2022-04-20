@@ -41,7 +41,7 @@ namespace ClientServerApp
         }
         private void RecieveMessage(string message)
         {
-            ServerTextBox.Text += $"{message}. {DateTime.Now}\n\n\n\n";
+            ServerTextBox.Text += $"{message}. {DateTime.Now}\n\n";
         }
         private void StartServer()
         {
@@ -49,27 +49,25 @@ namespace ClientServerApp
             serverSocket.Start();
             Invoke(DelegateRecieveMessage, $"Сервер включён в {DateTime.Now}. Порт в режиме ожидания соединения...");
             clientSocket = serverSocket.AcceptTcpClient();
-            bool disksSent = false; 
-            NetworkStream networkStream = clientSocket.GetStream();
-            StreamReader reader = new StreamReader(networkStream);
+            bool disksSent = false;
             while (clientSocket.Connected)
             {
                 if (!disksSent)
                 {
-                    ServerTextBox.Text += $"Клиент подключен с адреса: {(IPEndPoint)clientSocket.Client.RemoteEndPoint} {DateTime.Now}\n\n";
+                    ServerTextBox.Text += $"Клиент подключен с адреса: {(IPEndPoint)clientSocket.Client.RemoteEndPoint} {DateTime.Now}\n";
                     SendDrives();
                     disksSent = true;
                 }
                 try
                 {
-                    
+                    NetworkStream networkStream = clientSocket.GetStream();
+                    StreamReader reader = new StreamReader(networkStream);
                     string dataFromClient = reader.ReadLine();
-
                     dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("#"));
                     if (dataFromClient == "Диски")
                     {
                         SendDrives();
-                        ServerTextBox.Text += $"Сервер получил сообщение от клиента: {dataFromClient}. {DateTime.Now}\n\n";
+                        ServerTextBox.Text += $"Сервер получил сообщение от клиента: {dataFromClient}. {DateTime.Now}\n";
                     }
                     else if (dataFromClient == "Отключение от сервера:...")
                     {
@@ -77,7 +75,7 @@ namespace ClientServerApp
                     }
                     else
                     {
-                        ServerTextBox.Text += $"Сервер получил сообщение от клиента: {dataFromClient}. {DateTime.Now}\n\n";
+                        ServerTextBox.Text += $"Сервер получил сообщение от клиента: {dataFromClient}. {DateTime.Now}\n";
                         if (Directory.Exists(dataFromClient))
                         {
                             SendDirectories(dataFromClient);
@@ -99,16 +97,15 @@ namespace ClientServerApp
                 }
                 catch (UnauthorizedAccessException uae)
                 {
+                    NetworkStream networkStream = clientSocket.GetStream();
                     Invoke(DelegateRecieveMessage, $"{uae.Message}. {DateTime.Now}.");
                     StreamWriter writer = new StreamWriter(networkStream);
                     writer.WriteLine("Отказано в доступе!");
                     writer.Flush();
-
                 }
                 catch (Exception ex)
                 {
                     disksSent = false;
-                    //MessageBox.Show(ex.ToString(), "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Invoke(DelegateRecieveMessage, $"{ex}. Перезагрузка сервера... {DateTime.Now}. Порт в режиме ожидания соединения..."); serverSocket.Stop();
                     serverSocket.Stop();
                     serverSocket.Start();
@@ -191,7 +188,7 @@ namespace ClientServerApp
         private void ServerOffButton_Click(object sender, EventArgs e)
         {
             TurnOffServer();
-            ServerTextBox.Text += $"Сервер отключен {DateTime.Now}\n\n";
+            ServerTextBox.Text += $"Сервер отключен {DateTime.Now}\n";
             ServerOnButton.Enabled = true;
             ServerOffButton.Enabled = false;
             DisconnectButton.Enabled = false;
@@ -213,7 +210,7 @@ namespace ClientServerApp
                 directories = new List<string>();
                 tcpClient = new TcpClient();
                 tcpClient.Connect(IPAddress.Parse(ipBox.Text), portNumber);
-                ClientTextBox.Text += $"Подключено к серверу! {DateTime.Now}\n\n";
+                ClientTextBox.Text += $"Подключено к серверу! {DateTime.Now}\n";
                 ThreadingClient = new Thread(AcceptResponses);
                 ThreadingClient.Start();
                 DisconnectButton.Enabled = true;
@@ -239,7 +236,7 @@ namespace ClientServerApp
                     if (serverResponse.Contains("Диски: "))
                     {
                         ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}";
-                        ClientTextBox.Text += $" {DateTime.Now}\n\n";
+                        ClientTextBox.Text += $" {DateTime.Now}\n";
                         serverResponse = serverResponse.Replace("Диски: ", "");
                         string[] dirs = serverResponse.Split(',');
                         directories.Clear();
@@ -252,7 +249,7 @@ namespace ClientServerApp
                     else if (serverResponse.Contains("Каталоги и файлы: "))
                     {
                         ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}";
-                        ClientTextBox.Text += $" {DateTime.Now}\n\n";
+                        ClientTextBox.Text += $" {DateTime.Now}\n";
                         serverResponse = serverResponse.Replace("Каталоги и файлы: ", "");
                         string[] dirs = serverResponse.Split(',');
                         directories.Clear();
@@ -265,23 +262,23 @@ namespace ClientServerApp
                     else if (serverResponse.Contains("Содержимое текстового файла: "))
                     {
                         ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}";
-                        ClientTextBox.Text += $" {DateTime.Now}\n\n";
+                        ClientTextBox.Text += $" {DateTime.Now}\n";
                     }
                     else if (serverResponse.Contains("Сервер отключен: "))
                     {
-                        ClientTextBox.Text += $"Сервер отключен в {DateTime.Now}\n\n";
+                        ClientTextBox.Text += $"Сервер отключен в {DateTime.Now}\n";
                         ThreadingClient.Suspend();
                     }
                     else if (serverResponse == "Отказано в доступе!")
                     {
                         pathTextBox.Text = pathTextBox.Text.Remove(pathTextBox.Text.LastIndexOf('\\'));
-                        ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}\n\n";
-                        ClientTextBox.Text += $" {DateTime.Now}\n\n";
+                        ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}\n";
+                        ClientTextBox.Text += $" {DateTime.Now}\n";
                     }
                     else
                     {
-                        ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}\n\n";
-                        ClientTextBox.Text += $" {DateTime.Now}\n\n";
+                        ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}\n";
+                        ClientTextBox.Text += $" {DateTime.Now}\n";
                     }
                     path = pathTextBox.Text;
                 }
@@ -337,7 +334,7 @@ namespace ClientServerApp
             try
             {
                 Disconnect();
-                ClientTextBox.Text += $"Клиент отключен от сервера в {DateTime.Now}\n\n";
+                ClientTextBox.Text += $"Клиент отключен от сервера в {DateTime.Now}\n";
                 DisconnectButton.Enabled = false;
                 ConnectButton.Enabled = true;
                 backBtn.Enabled = false;
@@ -354,7 +351,7 @@ namespace ClientServerApp
             {
                 string message = text + "#";
                 NetworkStream clientStream = tcpClient.GetStream();
-                ClientTextBox.Text += $"Передача {message.Substring(0, message.IndexOf("#"))} серверу... {DateTime.Now}\n\n";
+                ClientTextBox.Text += $"Передача {message.Substring(0, message.IndexOf("#"))} серверу... {DateTime.Now}\n";
                 StreamWriter writer = new StreamWriter(clientStream);
                 writer.WriteLine(message);
                 writer.Flush();
