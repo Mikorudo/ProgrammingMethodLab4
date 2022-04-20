@@ -272,10 +272,9 @@ namespace ClientServerApp
                         ClientTextBox.Text += $"Сервер отключен в {DateTime.Now}\n\n";
                         ThreadingClient.Suspend();
                     }
-                    else if (serverResponse.Contains("Отказано в доступе!"))
+                    else if (serverResponse == "Отказано в доступе!")
                     {
                         pathTextBox.Text = pathTextBox.Text.Remove(pathTextBox.Text.LastIndexOf('\\'));
-                        path = pathTextBox.Text;
                         ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}\n\n";
                         ClientTextBox.Text += $" {DateTime.Now}\n\n";
                     }
@@ -284,6 +283,7 @@ namespace ClientServerApp
                         ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}\n\n";
                         ClientTextBox.Text += $" {DateTime.Now}\n\n";
                     }
+                    path = pathTextBox.Text;
                 }
                 catch (Exception ex)
                 {
