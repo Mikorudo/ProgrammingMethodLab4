@@ -1,7 +1,7 @@
 ﻿
 namespace ClientServerApp
 {
-    partial class Form1
+    partial class ClientServerInterface
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -29,9 +29,9 @@ namespace ClientServerApp
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.label3 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClientServerInterface));
+            this.ipLabel = new System.Windows.Forms.Label();
+            this.ipBox = new System.Windows.Forms.TextBox();
             this.ExitButton = new System.Windows.Forms.Button();
             this.ServerOffButton = new System.Windows.Forms.Button();
             this.ServerOnButton = new System.Windows.Forms.Button();
@@ -41,31 +41,31 @@ namespace ClientServerApp
             this.label2 = new System.Windows.Forms.Label();
             this.DisconnectButton = new System.Windows.Forms.Button();
             this.ConnectButton = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.listBox = new System.Windows.Forms.ListBox();
+            this.pathTextBox = new System.Windows.Forms.TextBox();
+            this.backBtn = new System.Windows.Forms.PictureBox();
+            this.drivesBtn = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.backBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.drivesBtn)).BeginInit();
             this.SuspendLayout();
             // 
-            // label3
+            // ipLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 427);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(64, 17);
-            this.label3.TabIndex = 32;
-            this.label3.Text = "IP-адрес";
+            this.ipLabel.AutoSize = true;
+            this.ipLabel.Location = new System.Drawing.Point(7, 427);
+            this.ipLabel.Name = "ipLabel";
+            this.ipLabel.Size = new System.Drawing.Size(64, 17);
+            this.ipLabel.TabIndex = 32;
+            this.ipLabel.Text = "IP-адрес";
             // 
-            // textBox1
+            // ipBox
             // 
-            this.textBox1.AccessibleRole = System.Windows.Forms.AccessibleRole.TitleBar;
-            this.textBox1.Location = new System.Drawing.Point(77, 424);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(293, 22);
-            this.textBox1.TabIndex = 31;
-            this.textBox1.Text = "127.0.0.1";
+            this.ipBox.AccessibleRole = System.Windows.Forms.AccessibleRole.TitleBar;
+            this.ipBox.Location = new System.Drawing.Point(77, 424);
+            this.ipBox.Name = "ipBox";
+            this.ipBox.Size = new System.Drawing.Size(293, 22);
+            this.ipBox.TabIndex = 31;
+            this.ipBox.Text = "127.0.0.1";
             // 
             // ExitButton
             // 
@@ -156,75 +156,75 @@ namespace ClientServerApp
             this.ConnectButton.UseVisualStyleBackColor = true;
             this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
-            // listBox1
+            // listBox
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(7, 55);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(363, 356);
-            this.listBox1.TabIndex = 39;
-            this.listBox1.DoubleClick += new System.EventHandler(this.SendToServerButton_Click);
+            this.listBox.FormattingEnabled = true;
+            this.listBox.ItemHeight = 16;
+            this.listBox.Location = new System.Drawing.Point(7, 55);
+            this.listBox.Name = "listBox";
+            this.listBox.Size = new System.Drawing.Size(363, 356);
+            this.listBox.TabIndex = 39;
+            this.listBox.DoubleClick += new System.EventHandler(this.SendToServerButton_Click);
             // 
-            // textBox2
+            // pathTextBox
             // 
-            this.textBox2.Enabled = false;
-            this.textBox2.Location = new System.Drawing.Point(77, 23);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(293, 22);
-            this.textBox2.TabIndex = 40;
+            this.pathTextBox.Enabled = false;
+            this.pathTextBox.Location = new System.Drawing.Point(77, 23);
+            this.pathTextBox.Name = "pathTextBox";
+            this.pathTextBox.ReadOnly = true;
+            this.pathTextBox.Size = new System.Drawing.Size(293, 22);
+            this.pathTextBox.TabIndex = 40;
             // 
-            // pictureBox1
+            // backBtn
             // 
-            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox1.Enabled = false;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(42, 23);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(29, 22);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 41;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.backBtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.backBtn.Enabled = false;
+            this.backBtn.Image = ((System.Drawing.Image)(resources.GetObject("backBtn.Image")));
+            this.backBtn.Location = new System.Drawing.Point(42, 23);
+            this.backBtn.Name = "backBtn";
+            this.backBtn.Size = new System.Drawing.Size(29, 22);
+            this.backBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.backBtn.TabIndex = 41;
+            this.backBtn.TabStop = false;
+            this.backBtn.Click += new System.EventHandler(this.backBtn_Click);
             // 
-            // pictureBox2
+            // drivesBtn
             // 
-            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox2.Enabled = false;
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(7, 23);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(29, 22);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 42;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            this.drivesBtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.drivesBtn.Enabled = false;
+            this.drivesBtn.Image = ((System.Drawing.Image)(resources.GetObject("drivesBtn.Image")));
+            this.drivesBtn.Location = new System.Drawing.Point(7, 23);
+            this.drivesBtn.Name = "drivesBtn";
+            this.drivesBtn.Size = new System.Drawing.Size(29, 22);
+            this.drivesBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.drivesBtn.TabIndex = 42;
+            this.drivesBtn.TabStop = false;
+            this.drivesBtn.Click += new System.EventHandler(this.drivesBtn_Click);
             // 
-            // Form1
+            // ClientServerInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1007, 565);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.drivesBtn);
+            this.Controls.Add(this.backBtn);
+            this.Controls.Add(this.pathTextBox);
+            this.Controls.Add(this.listBox);
             this.Controls.Add(this.DisconnectButton);
             this.Controls.Add(this.ConnectButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.ServerTextBox);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.ipLabel);
+            this.Controls.Add(this.ipBox);
             this.Controls.Add(this.ExitButton);
             this.Controls.Add(this.ServerOffButton);
             this.Controls.Add(this.ServerOnButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ClientTextBox);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.Name = "ClientServerInterface";
+            this.Text = "Клиенто-программное приложение";
+            ((System.ComponentModel.ISupportInitialize)(this.backBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.drivesBtn)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -232,8 +232,8 @@ namespace ClientServerApp
 
         #endregion
 
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label ipLabel;
+        private System.Windows.Forms.TextBox ipBox;
         private System.Windows.Forms.Button ExitButton;
         private System.Windows.Forms.Button ServerOffButton;
         private System.Windows.Forms.Button ServerOnButton;
@@ -243,10 +243,10 @@ namespace ClientServerApp
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button DisconnectButton;
         private System.Windows.Forms.Button ConnectButton;
-		private System.Windows.Forms.ListBox listBox1;
-		private System.Windows.Forms.TextBox textBox2;
-		private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
+		private System.Windows.Forms.ListBox listBox;
+		private System.Windows.Forms.TextBox pathTextBox;
+		private System.Windows.Forms.PictureBox backBtn;
+        private System.Windows.Forms.PictureBox drivesBtn;
     }
 }
 

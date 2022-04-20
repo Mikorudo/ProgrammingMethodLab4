@@ -9,10 +9,10 @@ using System.Windows.Forms;
 
 namespace ClientServerApp
 {
-    public partial class Form1 : Form
+    public partial class ClientServerInterface : Form
     {
         static int portNumber = 8080;
-        public Form1()
+        public ClientServerInterface()
         {
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
@@ -26,7 +26,7 @@ namespace ClientServerApp
         {
             try
             {
-                serverSocket = new TcpListener(IPAddress.Parse(textBox1.Text), portNumber);
+                serverSocket = new TcpListener(IPAddress.Parse(ipBox.Text), portNumber);
                 ThreadingServer = new Thread(StartServer);
                 ThreadingServer.Start();
 
@@ -49,7 +49,9 @@ namespace ClientServerApp
             serverSocket.Start();
             Invoke(DelegateRecieveMessage, $"Сервер включён в {DateTime.Now}. Порт в режиме ожидания соединения...");
             clientSocket = serverSocket.AcceptTcpClient();
-            bool disksSent = false;
+            bool disksSent = false; 
+            NetworkStream networkStream = clientSocket.GetStream();
+            StreamReader reader = new StreamReader(networkStream);
             while (clientSocket.Connected)
             {
                 if (!disksSent)
@@ -60,8 +62,7 @@ namespace ClientServerApp
                 }
                 try
                 {
-                    NetworkStream networkStream = clientSocket.GetStream();
-                    StreamReader reader = new StreamReader(networkStream);
+                    
                     string dataFromClient = reader.ReadLine();
 
                     dataFromClient = dataFromClient.Substring(0, dataFromClient.IndexOf("#"));
@@ -99,7 +100,10 @@ namespace ClientServerApp
                 catch (UnauthorizedAccessException uae)
                 {
                     Invoke(DelegateRecieveMessage, $"{uae.Message}. {DateTime.Now}.");
-                    textBox2.Text = textBox2.Text.Remove(textBox2.Text.LastIndexOf('\\'));
+                    StreamWriter writer = new StreamWriter(networkStream);
+                    writer.WriteLine("Отказано в доступе!");
+                    writer.Flush();
+
                 }
                 catch (Exception ex)
                 {
@@ -126,7 +130,6 @@ namespace ClientServerApp
             }
             string message = "Диски: " + drives;
             NetworkStream networkStream = clientSocket.GetStream();
-
             StreamWriter writer = new StreamWriter(networkStream);
             writer.WriteLine(message);
             writer.Flush();
@@ -193,8 +196,8 @@ namespace ClientServerApp
             ServerOffButton.Enabled = false;
             DisconnectButton.Enabled = false;
             ConnectButton.Enabled = false;
-            pictureBox1.Enabled = false;
-            pictureBox2.Enabled = false;
+            backBtn.Enabled = false;
+            drivesBtn.Enabled = false;
         }
         #endregion
 
@@ -209,13 +212,13 @@ namespace ClientServerApp
             {
                 directories = new List<string>();
                 tcpClient = new TcpClient();
-                tcpClient.Connect(IPAddress.Parse(textBox1.Text), portNumber);
+                tcpClient.Connect(IPAddress.Parse(ipBox.Text), portNumber);
                 ClientTextBox.Text += $"Подключено к серверу! {DateTime.Now}\n\n";
                 ThreadingClient = new Thread(AcceptResponses);
                 ThreadingClient.Start();
                 DisconnectButton.Enabled = true;
-                pictureBox1.Enabled = true;
-                pictureBox2.Enabled = true;
+                backBtn.Enabled = true;
+                drivesBtn.Enabled = true;
                 ConnectButton.Enabled = false;
             }
             catch (Exception ex)
@@ -269,6 +272,13 @@ namespace ClientServerApp
                         ClientTextBox.Text += $"Сервер отключен в {DateTime.Now}\n\n";
                         ThreadingClient.Suspend();
                     }
+                    else if (serverResponse.Contains("Отказано в доступе!"))
+                    {
+                        pathTextBox.Text = pathTextBox.Text.Remove(pathTextBox.Text.LastIndexOf('\\'));
+                        path = pathTextBox.Text;
+                        ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}\n\n";
+                        ClientTextBox.Text += $" {DateTime.Now}\n\n";
+                    }
                     else
                     {
                         ClientTextBox.Text += $"Клиент получил ответ от сервера: {serverResponse}\n\n";
@@ -283,31 +293,31 @@ namespace ClientServerApp
         }
         private void UpdateListBox()
         {
-            listBox1.Items.Clear();
+            listBox.Items.Clear();
             foreach (var item in directories)
             {
                 string temp = item.Trim('\0');
-                listBox1.Items.Add(temp);
+                listBox.Items.Add(temp);
             }
         }
         private void SendToServerButton_Click(object sender, EventArgs e)
         {
-            path = textBox2.Text;
-            if (listBox1.SelectedItems.Count == 1)
+            path = pathTextBox.Text;
+            if (listBox.SelectedItems.Count == 1)
             {
                 if (path == null || path.ToString() == "")
                 {
-                    string path = listBox1.SelectedItem as string;
+                    string path = listBox.SelectedItem as string;
                     this.path = path;
                 }
                 else
                 {
-                    string path = listBox1.SelectedItem.ToString();
+                    string path = listBox.SelectedItem.ToString();
                     this.path = Path.Combine(this.path, path);
                 }
                 if (Directory.Exists(Path.Combine(path, path)))
                 {
-                    textBox2.Text = path;
+                    pathTextBox.Text = path;
                 }
                 SendToServer(path);
             }
@@ -330,8 +340,8 @@ namespace ClientServerApp
                 ClientTextBox.Text += $"Клиент отключен от сервера в {DateTime.Now}\n\n";
                 DisconnectButton.Enabled = false;
                 ConnectButton.Enabled = true;
-                pictureBox1.Enabled = false;
-                pictureBox2.Enabled = false;
+                backBtn.Enabled = false;
+                drivesBtn.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -354,7 +364,7 @@ namespace ClientServerApp
                 MessageBox.Show(ex.ToString(), "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void backBtn_Click(object sender, EventArgs e)
         {
             path = Path.GetDirectoryName(path);
             if (path == null)
@@ -365,13 +375,13 @@ namespace ClientServerApp
             {
                 SendToServer(path);
             }
-            textBox2.Text = path;
+            pathTextBox.Text = path;
         }
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void drivesBtn_Click(object sender, EventArgs e)
         {
             path = "";
             SendToServer("Диски");
-            textBox2.Text = path;
+            pathTextBox.Text = path;
         }
         #endregion
         private void ExitButton_Click(object sender, EventArgs e)
